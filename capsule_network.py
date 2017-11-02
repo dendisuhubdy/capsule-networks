@@ -125,7 +125,6 @@ class CapsuleLoss(nn.Module):
 if __name__ == "__main__":
     from torch.autograd import Variable
     from torch.optim import Adam
-    from torch.optim.lr_scheduler import ReduceLROnPlateau
     from torchnet.engine import Engine
     from torchnet.logger import VisdomPlotLogger, VisdomLogger
     from torchvision.utils import make_grid
@@ -137,7 +136,6 @@ if __name__ == "__main__":
     model.cuda()
 
     optimizer = Adam(model.parameters())
-    scheduler = ReduceLROnPlateau(optimizer, 'max', patience=3)
 
     engine = Engine()
     meter_loss = tnt.meter.AverageValueMeter()
@@ -219,8 +217,6 @@ if __name__ == "__main__":
 
         print('[Epoch %d] Testing Loss: %.4f (Accuracy: %.2f%%)' % (
             state['epoch'], meter_loss.value()[0], meter_accuracy.value()[0]))
-
-        scheduler.step(meter_accuracy.value()[0], state['epoch'])
 
         torch.save(model.state_dict(), 'epochs/epoch_%d.pt' % state['epoch'])
 
